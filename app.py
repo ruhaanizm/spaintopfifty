@@ -2,213 +2,170 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# -----------------------------
-# PAGE CONFIG
-# -----------------------------
 st.set_page_config(
     page_title="Music Lifecycle Intelligence",
     layout="wide",
     page_icon="🎧"
 )
 
-# -----------------------------
-# CUSTOM CSS (THIS IS THE MAGIC)
-# -----------------------------
 st.markdown("""
 <style>
 
 /* FONTS */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;600&display=swap');
 
-/* ROOT VARIABLES — CONTROL THE VIBE */
 :root {
-    --bg-main: #020617;
-    --bg-glass: rgba(255, 255, 255, 0.04);
-    --border-glass: rgba(255,255,255,0.08);
-    --accent: #7c3aed;
-    --accent-soft: rgba(124,58,237,0.25);
-    --text-main: #e2e8f0;
-    --text-dim: #94a3b8;
+    --bg-main: #01010a;
+    --neon-purple: #a855f7;
+    --neon-blue: #38bdf8;
+    --neon-pink: #ec4899;
+    --neon-green: #22c55e;
+    --glass: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
 }
 
 /* GLOBAL */
-html, body, [class*="css"]  {
+html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
-    background: radial-gradient(circle at 20% 20%, #0f172a, #020617 70%);
-    color: var(--text-main);
-    overflow-x: hidden;
+    background: radial-gradient(circle at 10% 20%, #0f172a, #01010a 70%);
+    color: #e2e8f0;
 }
 
-/* SUBTLE BACKGROUND GLOW (THIS IS THE SAUCE) */
+/* BACKGROUND GLOW */
 body::before {
     content: "";
     position: fixed;
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(124,58,237,0.15), transparent 70%);
+    background: radial-gradient(circle, rgba(168,85,247,0.25), transparent 70%);
     top: -200px;
     left: -200px;
-    filter: blur(120px);
+    filter: blur(140px);
     z-index: -1;
 }
 
 body::after {
     content: "";
     position: fixed;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(59,130,246,0.12), transparent 70%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(56,189,248,0.25), transparent 70%);
     bottom: -200px;
     right: -200px;
-    filter: blur(120px);
+    filter: blur(140px);
     z-index: -1;
 }
 
-/* HEADINGS — SILKY TEXT */
+/* TITLE — CYBERPUNK */
 h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.8rem;
-    background: linear-gradient(90deg, #ffffff, #a5b4fc, #c4b5fd);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    background: linear-gradient(90deg, #a855f7, #38bdf8, #ec4899);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: -0.5px;
 }
 
-h2 {
-    color: var(--text-main);
-    font-weight: 600;
-}
-
-h3 {
-    color: var(--text-dim);
-}
-
-/* METRIC CARDS — FLOATING GLASS */
+/* METRIC CARDS */
 [data-testid="stMetric"] {
-    background: var(--bg-glass);
-    border: 1px solid var(--border-glass);
-    padding: 22px;
+    background: var(--glass);
+    border: 1px solid var(--border);
     border-radius: 20px;
-    backdrop-filter: blur(18px);
-    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    padding: 22px;
+    backdrop-filter: blur(20px);
+    transition: 0.3s;
 }
 
-/* HOVER = MICRO “PULL” EFFECT */
 [data-testid="stMetric"]:hover {
-    transform: translateY(-6px) scale(1.015);
-    box-shadow: 
-        0 10px 30px rgba(0,0,0,0.4),
-        0 0 25px var(--accent-soft);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:
+        0 0 25px rgba(168,85,247,0.6),
+        0 0 40px rgba(56,189,248,0.4);
 }
 
-/* SIDEBAR — DEPTH */
+/* SIDEBAR */
 section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #020617, #0f172a);
-    border-right: 1px solid var(--border-glass);
+    background: linear-gradient(180deg, #01010a, #0f172a);
+    border-right: 1px solid var(--border);
 }
 
-/* INPUTS — FOCUS GLOW */
+/* INPUTS */
 .stSelectbox div, .stMultiSelect div, .stDateInput div {
     background: rgba(255,255,255,0.03);
-    border-radius: 14px;
-    border: 1px solid var(--border-glass);
-    transition: all 0.25s ease;
+    border-radius: 12px;
+    border: 1px solid var(--border);
 }
 
 .stSelectbox div:focus-within,
 .stMultiSelect div:focus-within,
 .stDateInput div:focus-within {
-    border: 1px solid var(--accent);
-    box-shadow: 0 0 0 2px rgba(124,58,237,0.2);
+    border: 1px solid var(--neon-purple);
+    box-shadow: 0 0 12px rgba(168,85,247,0.6);
 }
 
-/* BUTTON — SMOOTH + TEMPTING */
+/* BUTTON */
 button[kind="primary"] {
-    background: linear-gradient(135deg, #7c3aed, #6366f1);
+    background: linear-gradient(135deg, #a855f7, #ec4899);
     border-radius: 14px;
     border: none;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-    transition: all 0.3s ease;
 }
 
 button[kind="primary"]:hover {
-    transform: translateY(-2px) scale(1.03);
-    box-shadow: 
-        0 10px 25px rgba(124,58,237,0.4),
-        0 0 20px rgba(99,102,241,0.5);
+    box-shadow:
+        0 0 20px #a855f7,
+        0 0 40px #ec4899;
 }
 
-/* CHART CONTAINER — SOFT GLASS PANEL */
+/* CHART CONTAINER */
 .stPlotlyChart {
     background: rgba(255,255,255,0.02);
     border-radius: 20px;
     padding: 16px;
-    border: 1px solid var(--border-glass);
-    backdrop-filter: blur(12px);
-    transition: 0.3s ease;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
 }
 
-.stPlotlyChart:hover {
-    border: 1px solid rgba(124,58,237,0.4);
-}
-
-/* SCROLLBAR — MINIMAL */
+/* SCROLL */
 ::-webkit-scrollbar {
     width: 6px;
 }
-
 ::-webkit-scrollbar-thumb {
-    background: rgba(148,163,184,0.25);
+    background: rgba(255,255,255,0.2);
     border-radius: 10px;
 }
 
-/* FOOTER */
-footer {
-    visibility: hidden;
-}
+/* REMOVE FOOTER */
+footer {visibility: hidden;}
 
 </style>
 """, unsafe_allow_html=True)
-
 
 df = pd.read_csv("data/processed/data_with_stages.csv")
 lifecycle_df = pd.read_csv("data/processed/lifecycle_data.csv")
 daily_songs = pd.read_csv("data/processed/daily_churn.csv")
 
 df['date'] = pd.to_datetime(df['date'])
+daily_songs['date'] = pd.to_datetime(daily_songs['date'])
 
-#header
-st.title("Music Lifecycle Intelligence Dashboard")
+
+st.title("🎧 Streaming Lifecycle Analytics Dashboard")
 st.caption("Understanding playlist dynamics, content behavior, and lifecycle performance")
 
-
-
-#sidebar
 
 with st.sidebar:
     st.header("Filters")
 
     date_range = st.date_input(
-    "Date Range",
-    value=(df['date'].min(), df['date'].max()),
-    min_value=df['date'].min(),
-    max_value=df['date'].max()
-)
+        "Date Range",
+        value=(df['date'].min(), df['date'].max()),
+        min_value=df['date'].min(),
+        max_value=df['date'].max()
+    )
+
     if isinstance(date_range, (list, tuple)) and len(date_range) == 1:
         st.warning("Bro started the timeline and dipped. Pick an end date too 💀")
         st.stop()
 
     start_date, end_date = date_range
-    if isinstance(date_range, tuple):
-        if len(date_range) == 2:
-            start_date, end_date = date_range
-        elif len(date_range) == 1:
-            start_date = end_date = date_range[0]
-        else:
-            start_date = end_date = df['date'].min()
-    else:
-        start_date = end_date = date_range
 
     stage_filter = st.multiselect(
         "Lifecycle Stage",
@@ -226,12 +183,12 @@ with st.sidebar:
         ["All"] + list(df['album_type'].unique())
     )
 
-#filters
+
 filtered_df = df.copy()
 
 filtered_df = filtered_df[
-    (filtered_df['date'] >= pd.to_datetime(date_range[0])) &
-    (filtered_df['date'] <= pd.to_datetime(date_range[1]))
+    (filtered_df['date'] >= pd.to_datetime(start_date)) &
+    (filtered_df['date'] <= pd.to_datetime(end_date))
 ]
 
 filtered_df = filtered_df[filtered_df['stage'].isin(stage_filter)]
@@ -244,55 +201,64 @@ elif explicit_filter == "Non-Explicit":
 if album_filter != "All":
     filtered_df = filtered_df[filtered_df['album_type'] == album_filter]
 
-#KPIs
+
 st.markdown("## Key Metrics")
 
 col1, col2, col3, col4 = st.columns(4)
 
-avg_days = lifecycle_df['total_days'].mean()
-avg_peak = lifecycle_df['time_to_peak'].mean()
-avg_churn = daily_songs['churn_rate'].mean()
-stability = lifecycle_df['total_days'].std()
-
-col1.metric("Avg Lifecycle", f"{avg_days:.1f} days")
-col2.metric("Time to Peak", f"{avg_peak:.1f} days")
-col3.metric("Churn Rate", f"{avg_churn*100:.2f}%")
-col4.metric("Stability Index", f"{stability:.1f}")
+col1.metric("Avg Lifecycle", f"{lifecycle_df['total_days'].mean():.1f} days")
+col2.metric("Time to Peak", f"{lifecycle_df['time_to_peak'].mean():.1f} days")
+col3.metric("Churn Rate", f"{daily_songs['churn_rate'].mean()*100:.2f}%")
+col4.metric("Stability Index", f"{lifecycle_df['total_days'].std():.1f}")
 
 st.markdown("---")
 
-#lifecycle
-st.markdown("## Song Lifecycle Explorer")
 
-song_choice = st.selectbox("Select a song", filtered_df['song_id'].unique())
+neon_colors = ["#a855f7", "#38bdf8", "#ec4899", "#22c55e", "#facc15"]
 
-song_data = filtered_df[filtered_df['song_id'] == song_choice]
+
+st.markdown("## Aggregate Lifecycle Curve")
+
+agg_lifecycle = filtered_df.groupby('days_since_entry')['position'].mean().reset_index()
 
 fig = px.line(
-    song_data,
-    x='date',
+    agg_lifecycle,
+    x='days_since_entry',
     y='position',
-    title="Lifecycle Curve",
-    markers=True
+    title="Average Song Lifecycle Pattern",
+    labels={
+        'days_since_entry': 'Days Since Entry',
+        'position': 'Average Rank Position'
+    },
+    color_discrete_sequence=neon_colors
 )
 
+fig.update_layout(height=350, template="plotly_dark")
 fig.update_yaxes(autorange="reversed")
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
-#entry and exit
+
 st.markdown("## Playlist Flow Dynamics")
 
 fig = px.line(
     daily_songs,
     x='date',
     y=['entries', 'exits'],
-    title="Daily Entries vs Exits"
+    labels={'value': 'Songs', 'variable': 'Metric', 'date': 'Date'}
 )
 
-st.plotly_chart(fig, use_container_width=True)
+fig.update_traces(selector=dict(name='entries'),
+                  line=dict(color='#38bdf8', dash='dot'))
 
-#stages
+fig.update_traces(selector=dict(name='exits'),
+                  line=dict(color='#f87171'))
+
+fig.update_layout(height=350, template="plotly_dark")
+
+st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+
+
 st.markdown("## Lifecycle Distribution")
 
 stage_dist = filtered_df['stage'].value_counts().reset_index()
@@ -302,52 +268,57 @@ fig = px.pie(
     stage_dist,
     names='stage',
     values='count',
-    hole=0.5
+    hole=0.5,
+    color_discrete_sequence=neon_colors
 )
+
+fig.update_traces(textinfo='percent+label', textfont=dict(color='white'))
+fig.update_layout(height=350, template="plotly_dark")
 
 st.plotly_chart(fig, use_container_width=True)
 
-#content
+
 st.markdown("## Content Behavior")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    fig = px.box(
+    fig1 = px.box(
         filtered_df,
         x='is_explicit',
         y='popularity',
-        title="Explicit vs Popularity",
-        labels={'is_explicit':'Explicit', 'popularity':'Popularity'}
+        labels={'is_explicit': 'Explicit', 'popularity': 'Popularity'},
+        color_discrete_sequence=neon_colors
     )
-    st.plotly_chart(fig, use_container_width=True)
+    fig1.update_layout(height=350, template="plotly_dark")
+    st.plotly_chart(fig1, use_container_width=True)
 
 with col2:
-    fig = px.box(
+    fig2 = px.box(
         filtered_df,
         x='album_type',
         y='popularity',
-        title="Album Type vs Popularity",
-        labels={'album_type':'Album Type', 'popularity':'Popularity'}
+        labels={'album_type': 'Album Type', 'popularity': 'Popularity'},
+        color_discrete_sequence=neon_colors
     )
-    st.plotly_chart(fig, use_container_width=True)
+    fig2.update_layout(height=350, template="plotly_dark")
+    st.plotly_chart(fig2, use_container_width=True)
 
-#churn
+
 st.markdown("## Playlist Stability")
 
 fig = px.line(
     daily_songs,
     x='date',
     y='churn_rate',
-    title="Churn Rate Over Time",
-    labels={
-        'date':'Date', 'churn_rate':'Churn Rate'
-    },
+    labels={'date': 'Date', 'churn_rate': 'Churn Rate'},
+    color_discrete_sequence=neon_colors
 )
 
-st.plotly_chart(fig, use_container_width=True)
+fig.update_layout(height=350, template="plotly_dark")
+
+st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+
 
 st.markdown("---")
-
-
-st.caption("Built by: Ruhan Ansari")
+st.caption("Built by Ruhan Ansari — powered by data & questionable sleep cycles")

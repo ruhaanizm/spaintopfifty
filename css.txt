@@ -1,0 +1,130 @@
+st.markdown("""
+<style>
+
+/* FONTS */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;600&display=swap');
+
+:root {
+    --bg-main: #01010a;
+    --neon-purple: #a855f7;
+    --neon-blue: #38bdf8;
+    --neon-pink: #ec4899;
+    --neon-green: #22c55e;
+    --glass: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+}
+
+/* GLOBAL */
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at 10% 20%, #0f172a, #01010a 70%);
+    color: #e2e8f0;
+}
+
+/* BACKGROUND GLOW */
+body::before {
+    content: "";
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(168,85,247,0.25), transparent 70%);
+    top: -200px;
+    left: -200px;
+    filter: blur(140px);
+    z-index: -1;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(56,189,248,0.25), transparent 70%);
+    bottom: -200px;
+    right: -200px;
+    filter: blur(140px);
+    z-index: -1;
+}
+
+/* TITLE — CYBERPUNK */
+h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    background: linear-gradient(90deg, #a855f7, #38bdf8, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* METRIC CARDS */
+[data-testid="stMetric"] {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 22px;
+    backdrop-filter: blur(20px);
+    transition: 0.3s;
+}
+
+[data-testid="stMetric"]:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:
+        0 0 25px rgba(168,85,247,0.6),
+        0 0 40px rgba(56,189,248,0.4);
+}
+
+/* SIDEBAR */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #01010a, #0f172a);
+    border-right: 1px solid var(--border);
+}
+
+/* INPUTS */
+.stSelectbox div, .stMultiSelect div, .stDateInput div {
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.stSelectbox div:focus-within,
+.stMultiSelect div:focus-within,
+.stDateInput div:focus-within {
+    border: 1px solid var(--neon-purple);
+    box-shadow: 0 0 12px rgba(168,85,247,0.6);
+}
+
+/* BUTTON */
+button[kind="primary"] {
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    border-radius: 14px;
+    border: none;
+}
+
+button[kind="primary"]:hover {
+    box-shadow:
+        0 0 20px #a855f7,
+        0 0 40px #ec4899;
+}
+
+/* CHART CONTAINER */
+.stPlotlyChart {
+    background: rgba(255,255,255,0.02);
+    border-radius: 20px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+}
+
+/* SCROLL */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+}
+
+/* REMOVE FOOTER */
+footer {visibility: hidden;}
+
+</style>
+""", unsafe_allow_html=True)
