@@ -56,7 +56,7 @@ body::after {
     z-index: -1;
 }
 
-/* TITLE — CYBERPUNK */
+/* TITLE*/
 h1 {
     font-family: 'Orbitron', sans-serif;
     font-size: 3rem;
