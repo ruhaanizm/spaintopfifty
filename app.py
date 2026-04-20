@@ -204,12 +204,21 @@ if album_filter != "All":
 
 st.markdown("## Key Metrics")
 
+
 col1, col2, col3, col4 = st.columns(4)
 
-col1.metric("Avg Lifecycle", f"{lifecycle_df['total_days'].mean():.1f} days")
-col2.metric("Time to Peak", f"{lifecycle_df['time_to_peak'].mean():.1f} days")
-col3.metric("Churn Rate", f"{daily_songs['churn_rate'].mean()*100:.2f}%")
-col4.metric("Stability Index", f"{lifecycle_df['total_days'].std():.1f}")
+filtered_lifecycle = lifecycle_df[
+    lifecycle_df['song_id'].isin(filtered_df['song_id'])
+]
+filtered_daily = daily_songs[
+    (daily_songs['date'] >= pd.to_datetime(start_date)) &
+    (daily_songs['date'] <= pd.to_datetime(end_date))
+]
+col1.metric("Avg Lifecycle", f"{filtered_lifecycle['total_days'].mean():.1f} days")
+col2.metric("Time to Peak", f"{filtered_lifecycle['time_to_peak'].mean():.1f} days")
+col3.metric("Churn Rate", f"{filtered_daily['churn_rate'].mean()*100:.2f}%")
+col4.metric("Stability Index", f"{filtered_lifecycle['total_days'].std():.1f}")
+
 
 st.markdown("---")
 
